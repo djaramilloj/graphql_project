@@ -1,0 +1,98 @@
+"validate level types"
+enum Level {
+    beginner
+    intermediate
+    advanced
+}
+
+union GlobalSearch = Course | Student | Monitor
+
+type Course {
+    _id: ID!
+    title: String!
+    teacher: String
+    description: String!
+    topic: String @deprecated
+    people: [Student],
+    level: Level
+}
+
+interface Person {
+    _id: ID!
+    name: String!
+    email: String!
+}
+
+type Student implements Person{
+    _id: ID!
+    name: String!
+    email: String!
+    avatar: String
+}
+
+type Monitor implements Person{
+    _id: ID!
+    name: String!
+    email: String!
+    phone: String
+}
+
+
+type Query {
+    "returns all courses"
+    getCourses: [Course]
+    "returns a course by id"
+    getCourse(id: ID!): Course
+    "returns all students"
+    getPeople: [Person]
+    "returns a student by id"
+    getPerson(id: ID!): Person
+    "execute global search"
+    searchItems(keyword: String!): [GlobalSearch]
+}
+
+input CourseInput {
+    title: String!
+    teacher: String
+    description: String!
+    topic: String,
+    level: Level
+}
+
+input EditCourseInput {
+    title: String
+    teacher: String
+    description: String
+    topic: String
+}
+
+input PersonInput {
+    name: String!
+    email: String!
+    phone: String
+    avatar: String
+}
+
+input EditPersonInput {
+    name: String
+    email: String
+    phone: String
+    avatar: String
+}
+
+type Mutation {
+    "create a course"
+    createCourse(input: CourseInput!): Course
+    "edit a course"
+    editCourse(input: EditCourseInput, id: ID!): Course
+     "create a person"
+    createPerson(input: PersonInput!): Person
+    "edit a person"
+    editPerson(input: EditPersonInput, id: ID!): Person
+    "delete a course"
+    deleteCourse(id: ID!): String
+    "delete a student"
+    deleteStudent(id: ID!): String
+    "add a person to a course"
+    addPeople(courseId: ID!, personId: ID!): Course
+}
